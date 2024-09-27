@@ -1,31 +1,19 @@
+local HttpService = game:GetService("HttpService")
 
-
-local RobloxThumbnailFetcher = {}
-local HttpService = game:GetService("HttpService") 
-
-
-function RobloxThumbnailFetcher.fetchThumbnail(assetId)
-    local url = "https://thumbnails.roblox.com/v1/assets?assetIds=" .. tostring(assetId) .. "&returnPolicy=PlaceHolder&size=420x420&format=webp"
-    print("Fetching image for assetId:", assetId) -- Debug: print assetId
+local function fetchRobloxThumbnail(assetId)
+    local url = string.format("https://thumbnails.roblox.com/v1/assets?assetIds=%s&size=420x420&format=Png&isCircular=false", assetId)
     
-    local success, response = pcall(function() 
-        return HttpService:GetAsync(url) 
+    local success, response = pcall(function()
+        return HttpService:GetAsync(url)
     end)
     
-    if not success then
-        warn("Failed to fetch thumbnail data: ", response)
-        return nil
+    if success then
+        local data = HttpService:JSONDecode(response)
+        if data and data.data and #data.data > 0 then
+            return data.data[1].imageUrl
+        end
     end
-
-    local data = HttpService:JSONDecode(response) 
-    
-    if data and data.data and data.data[1] and data.data[1].imageUrl then
-        print("Fetched image URL:", data.data[1].imageUrl)
-        return data.data[1].imageUrl 
-    else
-        warn("No valid image URL found for assetId: ", assetId)
-        return nil 
-    end
+    return nil
 end
 
-return RobloxThumbnailFetcher
+return fetchRobloxThumbnail
