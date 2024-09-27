@@ -14,9 +14,9 @@ function Embed.new()
 			
 			["content"] = "",
 			["embeds"] = {{
-				["title"] = "",
-				["description"] = "",
-				["color"] = tonumber(0x8B008B),
+				["title"] = "Kings  here!",
+				["description"] = "I'm ON TOP!",
+				["color"] = tonumber(0xff1f44),
 			}}
 			
 		},
@@ -28,7 +28,7 @@ function Embed.new()
 	}, Embed)
 end
 
--- Set the author field of the embed
+
 function Embed:SetAuthor(Data)
 	local Valid = {"name", "icon_url", "url"}
 	self.EmbedContent.embeds[1].author = {}
@@ -39,17 +39,15 @@ function Embed:SetAuthor(Data)
 	end
 end
 
--- Set the title of the embed
+
 function Embed:SetTitle(Title)
 	self.EmbedContent.embeds[1].title = Title
 end
 
--- Set the description of the embed
 function Embed:SetDescription(Data)
 	self.EmbedContent.embeds[1].description = Data
 end
 
--- Add multiple fields to the embed
 function Embed:AddFields(Data)
 	if not self.EmbedContent.embeds[1].fields then
 		self.EmbedContent.embeds[1].fields = {}
@@ -59,7 +57,7 @@ function Embed:AddFields(Data)
 	end
 end
 
--- Set a footer with optional icon
+
 function Embed:SetFooter(Text, IconURL)
 	self.EmbedContent.embeds[1].footer = {
 		["text"] = Text or "",
@@ -67,45 +65,43 @@ function Embed:SetFooter(Text, IconURL)
 	}
 end
 
--- Set an image for the embed
+
 function Embed:SetImage(URL)
 	self.EmbedContent.embeds[1].image = {["url"] = URL}
 end
 
--- Set a thumbnail for the embed
+
 function Embed:SetThumbnail(URL)
 	self.EmbedContent.embeds[1].thumbnail = {["url"] = URL}
 end
 
--- Set the embed's timestamp
+
 function Embed:SetTimestamp(Timestamp)
 	if Timestamp == nil then
-		Timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ") -- RFC3339 format
+		Timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
 	end
 	self.EmbedContent.embeds[1].timestamp = Timestamp
 end
 
--- Set the webhook URL to send the embed to
 function Embed:SetWebhook(URL)
 	self.Webhook = URL
 end
 
--- Set the maximum number of tries for sending
+
 function Embed:SetMaxTries(Num)
 	self.MaxTries = Num or 5
 end
 
--- Force send if max tries exceeded
+
 function Embed:SetForced(Bool)
 	self.Forced = Bool == nil and false or Bool
 end
 
--- Set debug mode
+
 function Embed:SetDebug(Bool)
 	self.Debug = Bool == true
 end
 
--- Send the embed to the webhook
 function Embed:Send()
 	local S,E = pcall(function()
 		request({
@@ -142,19 +138,16 @@ function Embed:Send()
 	end
 end
 
--- Bind a function to run on successful send
 function Embed:OnSuccess(Function)
 	local TotalNum = #self.Connections + 1
 	self.Connections[TotalNum] = self.Events.Success.Event:Connect(Function)
 end
 
--- Bind a function to run on failure
 function Embed:OnFail(Function)
 	local TotalNum = #self.Connections + 1
 	self.Connections[TotalNum] = self.Events.Fail.Event:Connect(Function)
 end
 
--- Clean up resources and connections
 function Embed:Dispose()
 	for _, v in pairs(self.Events) do
 		if typeof(v) == "Instance" then
